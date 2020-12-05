@@ -4,11 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Movie;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hannah.testmeds.R;
 import com.hannah.testmeds.adapter.PostsAdapter;
 import com.hannah.testmeds.databinding.ActivityDashboardBinding;
@@ -45,13 +49,12 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
 
+
         postsAdapter = new PostsAdapter(this);
         binding.postsRecyclerView.setAdapter(postsAdapter);
         postsModels = new ArrayList<>();
 
-        for (int i = 0; i < 25; i++) {
-            postsModels.add(new PostsModel());
-        }
+        postsAdapter.setPostsModelList(postsModels);
 
         fetchPosts();
     }
@@ -60,19 +63,20 @@ public class DashboardActivity extends AppCompatActivity {
                 .baseUrl(getResources().getString(R.string.base_url))
                 .build();
         PostInterface postInterface = retrofit.create(PostInterface.class);
-
-        postInterface.fetchPosts(new Callback<List<PostsModel>>() {
+        postInterface.fetchPosts(new Callback<PostsModel.ListAll>() {
             @Override
-            public void onResponse(Call<List<PostsModel>> call, Response<List<PostsModel>> response) {
-                postsAdapter.setPostsModelList(response.body());
-                Log.i("results", call.toString());
+            public void onResponse(Call<PostsModel.ListAll> call, Response<PostsModel.ListAll> response) {
+                postsAdapter.setPostsModelList(response.body().getAll());
+
             }
 
             @Override
-            public void onFailure(Call<List<PostsModel>> call, Throwable t) {
+            public void onFailure(Call<PostsModel.ListAll> call, Throwable t) {
 
             }
+
 
         });
+
     }
 }
