@@ -1,15 +1,16 @@
-package interfaces;
-
+package data;
 
 import com.hannah.testmeds.model.PostsModel;
 
 
-import retrofit2.Callback;
+import java.util.List;
+
+import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface PostInterface {
         @GET("/posts")
-        default void fetchPosts(Callback<PostsModel.ListAll> getPostsList) {
-        }
+        Call<List<PostsModel>> getPostsList();
+
 
 }

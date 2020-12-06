@@ -1,13 +1,15 @@
 package com.hannah.testmeds.model;
 
-import android.graphics.Movie;
-
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 public class PostsModel {
+    @SerializedName("userId")
     private int userId;
-    private Long id;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("title")
     private String title;
+    @SerializedName("body")
     private String body;
 
     public int getUserId() {
@@ -18,11 +20,11 @@ public class PostsModel {
         this.userId = userId;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -40,13 +42,5 @@ public class PostsModel {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public static class ListAll {
-        private List<PostsModel> postsList;
-
-        public List<PostsModel> getAll() {
-            return postsList;
-        }
     }
 }

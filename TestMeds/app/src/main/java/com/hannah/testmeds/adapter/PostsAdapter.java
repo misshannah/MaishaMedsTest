@@ -3,10 +3,13 @@ package com.hannah.testmeds.adapter;
 import android.content.Context;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.hannah.testmeds.R;
 import com.hannah.testmeds.model.PostsModel;
 
 import java.util.ArrayList;
@@ -26,11 +29,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsViewHolder> {
     @NonNull
     @Override
     public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(mContext).inflate(R.layout.adapter_layout,parent,false);
+        return new PostsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PostsViewHolder holder, int position) {
+        holder.textId.setText(Integer.toString(postsModelList.get(position).getId()));
+        holder.textUserId.setText(Integer.toString(postsModelList.get(position).getUserId()));
+        holder.textTitle.setText(postsModelList.get(position).getTitle());
+        holder.textBody.setText(postsModelList.get(position).getBody());
+
     }
 
     @Override
