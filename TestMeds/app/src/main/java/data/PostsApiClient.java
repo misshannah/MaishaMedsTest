@@ -3,7 +3,7 @@ package data;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
+public class PostsApiClient {
     public static String BASE_URL = "https://jsonplaceholder.typicode.com";
     private static Retrofit retrofit;
     public static Retrofit getClient(){

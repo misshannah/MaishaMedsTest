@@ -8,28 +8,28 @@ import android.os.Bundle;
 
 import com.hannah.testmeds.R;
 import com.hannah.testmeds.adapter.PostsAdapter;
-import com.hannah.testmeds.databinding.ActivityDashboardBinding;
+import com.hannah.testmeds.databinding.HomePageLayoutBinding;
 import com.hannah.testmeds.model.PostsModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import data.ApiClient;
+import data.PostsApiClient;
 import data.PostInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DashboardActivity extends AppCompatActivity {
+public class HomePage extends AppCompatActivity {
     private PostsAdapter postsAdapter;
-    private ActivityDashboardBinding binding;
+    private HomePageLayoutBinding binding;
     private List<PostsModel> postsModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
+        binding = DataBindingUtil.setContentView(this, R.layout.home_page_layout);
 
         binding.postsRecyclerView.setHasFixedSize(true);
 
@@ -46,7 +46,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     private void fetchPosts() {
-        PostInterface apiService = ApiClient.getClient().create(PostInterface.class);
+        PostInterface apiService = PostsApiClient.getClient().create(PostInterface.class);
         Call<List<PostsModel>> call = apiService.getPostsList();
         call.enqueue(new Callback<List<PostsModel>>() {
             @Override
@@ -59,7 +59,6 @@ public class DashboardActivity extends AppCompatActivity {
             public void onFailure(Call<List<PostsModel>> call, Throwable t) {
             }
         });
-
 
     }
 }
