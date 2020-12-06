@@ -10,7 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hannah.testmeds.R;
+import com.hannah.testmeds.database.AppDatabase;
+import com.hannah.testmeds.database.DaoAccess;
+import com.hannah.testmeds.database.PostsListTable;
 import com.hannah.testmeds.model.PostsModel;
+import com.hannah.testmeds.ui.HomePage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +24,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsViewHolder> {
     private LayoutInflater mInflater;
     private Context mContext;
 
-    public PostsAdapter(Context context) {
+
+
+    public PostsAdapter(Context context, List<PostsListTable> postsListTables) {
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.postsModelList = new ArrayList<>();
@@ -40,6 +46,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsViewHolder> {
         holder.textTitle.setText(postsModelList.get(position).getTitle());
         holder.textBody.setText(postsModelList.get(position).getBody());
 
+
     }
 
     @Override
@@ -48,6 +55,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsViewHolder> {
     }
 
     public void setPostsModelList(List<PostsModel> postsModelList) {
+
         if (postsModelList != null) {
             this.postsModelList.clear();
             this.postsModelList.addAll(postsModelList);

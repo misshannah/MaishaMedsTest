@@ -5,9 +5,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.hannah.testmeds.R;
 import com.hannah.testmeds.adapter.PostsAdapter;
+import com.hannah.testmeds.database.AppDatabase;
+import com.hannah.testmeds.database.DaoAccess;
+import com.hannah.testmeds.database.PostsListTable;
 import com.hannah.testmeds.databinding.HomePageLayoutBinding;
 import com.hannah.testmeds.model.PostsModel;
 
@@ -24,24 +28,47 @@ public class HomePage extends AppCompatActivity {
     private PostsAdapter postsAdapter;
     private HomePageLayoutBinding binding;
     private List<PostsModel> postsModels;
+    private DaoAccess daoAccess;
+    private List<PostsListTable> postsListTables;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         binding = DataBindingUtil.setContentView(this, R.layout.home_page_layout);
 
-        binding.postsRecyclerView.setHasFixedSize(true);
+        if(isOnline()) {
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        binding.postsRecyclerView.setLayoutManager(layoutManager);
+            binding.postsRecyclerView.setHasFixedSize(true);
 
-        postsAdapter = new PostsAdapter(this);
-        binding.postsRecyclerView.setAdapter(postsAdapter);
-        postsModels = new ArrayList<>();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            binding.postsRecyclerView.setLayoutManager(layoutManager);
 
-        postsAdapter.setPostsModelList(postsModels);
-        fetchPosts();
+            postsAdapter = new PostsAdapter(this, postsListTables);
+            binding.postsRecyclerView.setAdapter(postsAdapter);
+            postsModels = new ArrayList<>();
+
+            postsAdapter.setPostsModelList(postsModels);
+            fetchPosts();
+
+            for (int i = 0; i < postsModels.size(); i++) {
+
+
+                PostsListTable postsListTable = new PostsListTable(postsModels.get(i).getId(), postsModels.get(i).getUserId(),
+                        postsModels.get(i).getTitle(), postsModels.get(i).getBody());
+                postsListTable.setPostId(postsModels.get(i).getId());
+                postsListTable.setPostUserId(postsModels.get(i).getUserId());
+                postsListTable.setPostTitle(postsModels.get(i).getTitle());
+                postsListTable.setPostBody(postsModels.get(i).getBody());
+                daoAccess.insertOnlySinglePost(postsListTable);
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Check Internet connection!", Toast.LENGTH_SHORT).show();
+            fetchPostsFromDB();
+
+        }
     }
 
 
@@ -53,6 +80,8 @@ public class HomePage extends AppCompatActivity {
             public void onResponse(Call<List<PostsModel>> call, Response<List<PostsModel>> response) {
                 postsModels = response.body();
                 postsAdapter.setPostsModelList(postsModels);
+
+
             }
 
             @Override
@@ -60,5 +89,38 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    public void fetchPostsFromDB() {
+        daoAccess = AppDatabase.getInstance(getApplicationContext()).message();
+        daoAccess.fetchAllPosts().observe(this, (List<PostsListTable> postsListTables) -> {
+            postsAdapter = new PostsAdapter(HomePage.this, postsListTables);
+            binding.postsRecyclerView.setAdapter(postsAdapter);
+
+        });
+
+    }
+    public Boolean isOnline() {
+        try {
+            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            int returnVal = p1.waitFor();
+            boolean reachable = (returnVal == 0);
+            return reachable;
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return false;
     }
 }
