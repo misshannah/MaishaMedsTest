@@ -100,6 +100,7 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        fetchPostsFromDB();
     }
 
     public void fetchPostsFromDB() {
